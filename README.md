@@ -4,6 +4,12 @@ When processing data for long time your Computer might go into hibernation or sh
 
 Laptops can switch and hide PowerPlans when plugged in or in battery mode that's why all PowerPlans can be adjusted at once to avoid unecpected behavior when unplugging. PowerCFG adjusts settings per plan not all PowerPlans at once. If disabling hibernation on the current active PowerPlan on a Laptop and then unplugging it, your Laptop might still go into hibernation on the battery plan and cancel your processing.
 
+#### Versions
+
+ - **Verbose** has a bunch of feedback added that are purely informative not functional.
+ - **Minimized** reduced to a more barebones version which is easy to include in your own scripts. However also less readable since some parts are also reduced to one line.
+ - **LidOnly** reduced to only adjust the LidClose Action.
+
 #### Some additional notes
 
 - PowerCFG does not list hidden plans but can edit them. CIM/WIM can neither list or edit them.
