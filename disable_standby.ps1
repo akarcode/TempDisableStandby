@@ -25,9 +25,9 @@ Function Disable-Standby {
             }; Plans   = @{} 
         }
 
-        foreach ( $Item in $Settings.Categories.GetEnumerator() | Where-Object {
+        foreach ( $Item in $Settings.Categories.GetEnumerator() | Where-Object { $_.Name -ne 'Lid' }) {
         
-            $_.Name -ne 'Lid' }) { $Settings.Categories[$Item.Name][0] *= 60
+            $Settings.Categories[$Item.Name][0] *= 60
             
         }
 
