@@ -30,7 +30,7 @@ These are the old versions of the script, they might still be useful for someone
 
 ## Changelog
 
-v1.0.1
+v1.1
 
 - Wrapped the code into a function
 - The settings are temp stored in a XML file
