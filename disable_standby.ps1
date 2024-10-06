@@ -17,14 +17,19 @@ Function Disable-Standby {
         # Lid: DoNothing (0), Sleep (1), Hibernate (2), ShutDown (3)
         $Settings = @{
             Categories = @{
-            Hibernate = 0, 'SUB_SLEEP', 'HIBERNATEIDLE';
-            Harddisk = 0, 'SUB_DISK', 'DISKIDLE';
-            Lid = 0, 'SUB_BUTTONS', 'LIDACTION';
-            Sleep = 0, 'SUB_SLEEP', 'STANDBYIDLE';
-            Display = 2, 'SUB_VIDEO', 'VIDEOIDLE'
-            }; Plans = @{} }
+                Hibernate = 0, 'SUB_SLEEP', 'HIBERNATEIDLE';
+                Harddisk  = 0, 'SUB_DISK', 'DISKIDLE';
+                Lid       = 0, 'SUB_BUTTONS', 'LIDACTION';
+                Sleep     = 0, 'SUB_SLEEP', 'STANDBYIDLE';
+                Display   = 2, 'SUB_VIDEO', 'VIDEOIDLE'
+            }; Plans   = @{} 
+        }
 
-        foreach ( $Item in $Settings.Categories.GetEnumerator() | Where-Object { $_.Name -ne 'Lid' }) { $Settings.Categories[$Item.Name][0] *= 60 }
+        foreach ( $Item in $Settings.Categories.GetEnumerator() | Where-Object {
+        
+            $_.Name -ne 'Lid' }) { $Settings.Categories[$Item.Name][0] *= 60
+            
+        }
 
         # get active powerplan
         $Settings.ActiveGUID = (PowerCFG -GETACTIVESCHEME).split(' ')[3]
@@ -33,11 +38,18 @@ Function Disable-Standby {
         $RegistryHive = [Microsoft.Win32.RegistryHive]::LocalMachine
         $RegistryView = [Microsoft.Win32.RegistryView]::Default
         $SubKey = 'SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\'
-        $RegistryPlans = [Microsoft.Win32.RegistryKey]::OpenBaseKey($RegistryHive, $RegistryView).OpenSubKey($SubKey).GetSubKeyNames()
+        $RegistryPlans = [Microsoft.Win32.RegistryKey]::OpenBaseKey($RegistryHive, $RegistryView).
+            OpenSubKey($SubKey).
+            GetSubKeyNames()
 
         foreach ($Plan in $RegistryPlans) {
-
-            $TempName = ([Microsoft.Win32.RegistryKey]::OpenBaseKey($RegistryHive, $RegistryView).OpenSubKey(($SubKey + $Plan + '\')).GetValue('FriendlyName')).split(',')[-1].split('(')[0].Trim()
+        
+            $TempName = ([Microsoft.Win32.RegistryKey]::OpenBaseKey($RegistryHive, $RegistryView).
+                OpenSubKey(($SubKey + $Plan + '\')).
+                GetValue('FriendlyName')).
+                Split(',')[-1].
+                Split('(')[0].
+                Trim()
 
             $Settings.Plans[$TempName] = @{ GUID = $Plan; Time = @{}}
 
