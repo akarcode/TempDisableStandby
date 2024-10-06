@@ -9,10 +9,10 @@ You'll have to adjust the path where you want to temporally store the setting be
 #### additional notes
 
 - PowerCFG does not list hidden plans but can edit them. CIM/WIM can neither list or edit them.
-- PowerCFG allows for individual Plan editing which causes confusion since computers can switch PowerPlans automatic.
-- Windows user interface PowerButton and Lid close actions are applied to all Powerplans not individually.
+- PowerCFG allows for individual Plan editing which causes confusion since computers can switch power plans automatic.
+- Windows user interface PowerButton and Lid close actions are applied to all power plans not individually.
 - PowerCFG can randomly be incredibly slow and take around 3sec to spit out a response. I didn't figure out what can cause it.
-- PowerPlans are on purpose collected via the Registry directly since PowerCFG and CIM/WIM do not list hidden Plans.
+- Power plans are on purpose collected via the Registry directly since PowerCFG and CIM/WIM do not list hidden Plans.
 
 ## Legacy
 
