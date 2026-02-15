@@ -8,6 +8,7 @@ You'll have to adjust the path where you want to temporally store the setting be
 
 #### additional notes
 
+- Win11 overlay power plans are handled correctly by the script.
 - PowerCFG does not list hidden plans but can edit them. CIM/WIM can neither list or edit them.
 - PowerCFG allows for individual Plan editing which causes confusion since computers can switch power plans automatic.
 - Windows user interface PowerButton and Lid close actions are applied to all power plans not individually.
@@ -30,6 +31,11 @@ These are the old versions of the script, they might still be useful for someone
 
 ## Changelog
 
+v1.2
+
+- Added support for Win11
+- Fixed a tiny bug
+
 v1.1
 
 - Wrapped the code into a function
@@ -39,5 +45,5 @@ v1.0 (Initial release)
 
 ## Disclaimer
 
-The scripts works fine on my Win10 ROG Laptop. I cannot tell or know how other Windows versions might need some adjusting.
+The scripts works fine on my Win10 ROG and MSI Win11 Laptop. I cannot tell or know how other Windows versions might need some adjusting.
 
