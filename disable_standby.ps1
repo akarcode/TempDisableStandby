@@ -1,4 +1,4 @@
-﻿
+
 Function Disable-Standby {
 
     param (
@@ -44,6 +44,12 @@ Function Disable-Standby {
 
         foreach ($Plan in $RegistryPlans) {
         
+            $PlanKey = [Microsoft.Win32.RegistryKey]::OpenBaseKey($RegistryHive, $RegistryView).
+                OpenSubKey($SubKey + $Plan + '\')
+
+            # skip overlays and ghost entries with a SUB_SLEEP subkey check
+            if ($PlanKey.GetSubKeyNames() -notcontains '238c9fa8-0aad-41ed-83f4-97be242c8f20') { continue }
+        
             $TempName = ([Microsoft.Win32.RegistryKey]::OpenBaseKey($RegistryHive, $RegistryView).
                 OpenSubKey(($SubKey + $Plan + '\')).
                 GetValue('FriendlyName')).
@@ -60,7 +66,7 @@ Function Disable-Standby {
 
         if (Test-Path -Path $PathSettings) {
             
-            Write-Log -Text 'Existing settings file found!' -Color 'Black'
+            Write-Host -Text 'Existing settings file found!' -Color 'Black'
 
             $Settings = Import-Clixml -Path $PathSettings
 
@@ -71,19 +77,21 @@ Function Disable-Standby {
 
                     $CheckSetting = PowerCFG -QUERY $Plan.Value.GUID $Property.Value[1] $Property.Value[2]
 
-                    if (($CheckSetting[-3,-2] | ForEach-Object { [UInt32]($_ -split ': ')[1] }) -notcontains $Settings.Categories[$Property.Name][0]) {
+                    $AcLine = $CheckSetting | Where-Object { $_ -match 'Current AC Power Setting Index' }
+                    $DcLine = $CheckSetting | Where-Object { $_ -match 'Current DC Power Setting Index' }
+
+                    if (([UInt32]($AcLine -split ': ')[1].Trim(), [UInt32]($DcLine -split ': ')[1].Trim()) -notcontains $Settings.Categories[$Property.Name][0]) {
 
                         foreach ($Iteration in $True, $False) {
 
                             $PowerType = if ($Iteration) { '-SETACVALUEINDEX' } else { '-SETDCVALUEINDEX' }
 
                             PowerCFG $PowerType $Plan.Value.GUID $Property.Value[1] $Property.Value[2] $Settings.Categories[$Property.Name][0]
-
                         }
                     }
                 }
                 PowerCFG -SETACTIVE $Plan.Value.GUID
-            }
+            } 
             PowerCFG -SETACTIVE $Settings.ActiveGUID
 
         } else {
@@ -95,9 +103,12 @@ Function Disable-Standby {
             
                     $CheckSetting = PowerCFG -QUERY $Plan.Value.GUID $Property.Value[1] $Property.Value[2]
 
+                    $AcLine = $CheckSetting | Where-Object { $_ -match 'Current AC Power Setting Index' }
+                    $DcLine = $CheckSetting | Where-Object { $_ -match 'Current DC Power Setting Index' }
+
                     $Settings.Plans[$Plan.Name].Time[$Property.Name] = @(
 
-                        [UInt32]($CheckSetting[-3] -split ': ')[1], [UInt32]($CheckSetting[-2] -split ': ')[1]
+                        [UInt32]($AcLine -split ': ')[1].Trim(), [UInt32]($DcLine -split ': ')[1].Trim()
 
                     )
 
