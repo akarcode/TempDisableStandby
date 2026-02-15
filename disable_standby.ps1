@@ -66,7 +66,7 @@ Function Disable-Standby {
 
         if (Test-Path -Path $PathSettings) {
             
-            Write-Host -Text 'Existing settings file found!' -Color 'Black'
+            Write-Host 'Existing settings file found!'
 
             $Settings = Import-Clixml -Path $PathSettings
 
@@ -166,4 +166,5 @@ Disable-Standby -PathSettings $PathSettings
 PAUSE
 
 Disable-Standby -PathSettings $PathSettings -Reinstate
+
 
